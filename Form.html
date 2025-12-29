@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Sheets Form</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: #4a6ee0;
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            opacity: 0.9;
+        }
+
+        .form-container {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #4a6ee0;
+            box-shadow: 0 0 0 2px rgba(74, 110, 224, 0.2);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .btn {
+            background: #4a6ee0;
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .btn:hover {
+            background: #3a5ed0;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 5px;
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 5px;
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        .instructions {
+            background: #f8f9fa;
+            border-radius: 5px;
+            padding: 20px;
+            margin-top: 30px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .instructions h3 {
+            color: #4a6ee0;
+            margin-bottom: 10px;
+        }
+
+        .instructions ol {
+            padding-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 8px;
+        }
+
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Google Sheets Form</h1>
+            <p>Submit your data directly to Google Sheets</p>
+        </div>
+        
+        <div class="form-container">
+            <form id="googleSheetForm">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" required placeholder="Enter your full name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required placeholder="Enter your email">
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" placeholder="Enter your phone number">
+                </div>
+                
+                <div class="form-group">
+                    <label for="department">Department</label>
+                    <select id="department" name="department" required>
+                        <option value="" disabled selected>Select your department</option>
+                        <option value="Sales">Sales</option>
+                        <option value="Marketing">Marketing</option>
+                        <option value="IT">IT</option>
+                        <option value="HR">HR</option>
+                        <option value="Finance">Finance</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" placeholder="Enter your message"></textarea>
+                </div>
+                
+                <button type="submit" class="btn">Submit to Google Sheet</button>
+            </form>
+            
+            <div id="successMessage" class="success-message">
+                Data successfully submitted to Google Sheets!
+            </div>
+            
+            <div id="errorMessage" class="error-message">
+                There was an error submitting your data. Please try again.
+            </div>
+            
+            <div class="instructions">
+                <h3>How to connect this form to your Google Sheet</h3>
+                <ol>
+                    <li>Create a new Google Sheet and note its ID from the URL</li>
+                    <li>Open Google Apps Script and create a new project</li>
+                    <li>Paste the following code into the script editor:</li>
+                </ol>
+                
+                <div class="code-block">
+// Replace 'YOUR_SHEET_ID_HERE' with your actual Google Sheet ID<br>
+const SHEET_ID = 'YOUR_SHEET_ID_HERE';<br>
+<br>
+function doPost(e) {<br>
+&nbsp;&nbsp;try {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const sheet = SpreadsheetApp.openById(SHEET_ID).getActiveSheet();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const data = JSON.parse(e.postData.contents);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Add headers if the sheet is empty<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (sheet.getLastRow() === 0) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sheet.getRange(1, 1, 1, 5).setValues([['Timestamp', 'Name', 'Email', 'Phone', 'Department', 'Message']]);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Add new row with data<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sheet.appendRow([<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;new Date(),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data.name,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data.email,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data.phone,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data.department,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data.message<br>
+&nbsp;&nbsp;&nbsp;&nbsp;]);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return ContentService<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.createTextOutput(JSON.stringify({result: 'success'}))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.setMimeType(ContentService.MimeType.JSON);<br>
+&nbsp;&nbsp;} catch (error) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return ContentService<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.createTextOutput(JSON.stringify({result: 'error', error: error.toString()}))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.setMimeType(ContentService.MimeType.JSON);<br>
+&nbsp;&nbsp;}<br>
+}<br>
+<br>
+function doGet() {<br>
+&nbsp;&nbsp;return ContentService.createTextOutput("This web app is for receiving form data.");<br>
+}
+                </div>
+                
+                <ol start="4">
+                    <li>Save the project and deploy it as a web app with the following settings:
+                        <ul>
+                            <li>Execute as: Me</li>
+                            <li>Who has access: Anyone</li>
+                        </ul>
+                    </li>
+                    <li>Copy the web app URL and replace the placeholder in the JavaScript code below</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('googleSheetForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                department: document.getElementById('department').value,
+                message: document.getElementById('message').value
+            };
+            
+            // Replace this URL with your Google Apps Script Web App URL
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbxctxOg8_NDw-5Oj0GuHGbmVRGgGS7V_WpHo1mKmdgIA0MEbKztAPMUHJ2ztUZBWFWnQw/exec';
+            
+            // Show loading state
+            const submitBtn = document.querySelector('.btn');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Submitting...';
+            submitBtn.disabled = true;
+            
+            // Send data to Google Sheets
+            fetch(scriptURL, {
+                method: 'POST',
+                body: JSON.stringify(formData),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.result === 'success') {
+                    document.getElementById('successMessage').style.display = 'block';
+                    document.getElementById('errorMessage').style.display = 'none';
+                    document.getElementById('googleSheetForm').reset();
+                } else {
+                    throw new Error(data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('errorMessage').style.display = 'block';
+                document.getElementById('successMessage').style.display = 'none';
+            })
+            .finally(() => {
+                // Reset button state
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+                
+                // Hide messages after 5 seconds
+                setTimeout(() => {
+                    document.getElementById('successMessage').style.display = 'none';
+                    document.getElementById('errorMessage').style.display = 'none';
+                }, 5000);
+            });
+        });
+    </script>
+</body>
+</html>
